@@ -39,6 +39,7 @@ def scale(dataset, trained=False):
         data = []
         with open('meta.pkl', 'rb') as mta:
             data = pickle.loads(mta.read())
+        n_features = len(dataset[0]) - 1
         for i in range(n_features):
             current_set = [x[i] for x in dataset]
             maxim = data[i][0]
@@ -119,7 +120,7 @@ def generate_set(datum):
     return this_list
 
 
-def parse_json_data(jsonString):
+def parse_json_data(jsonString, trained):
     jData = json.loads(jsonString)
     is_list = False
     ret_list = []
@@ -132,7 +133,7 @@ def parse_json_data(jsonString):
             z = generate_set(datum)
             if z is not None:
                 ret_list.append(z)
-        ret_list = scale(meanify(ret_list, 30))
+        ret_list = scale(meanify(ret_list, 30), trained)
         # ret_list = meanify(scale(ret_list), 1)
         return ret_list
     else:
@@ -149,7 +150,7 @@ def create_data(trained=False):
 
     data = values.split('\n')
     data = ',\n'.join(data[:-1])
-    data = parse_json_data('[' + data + ']')
+    data = parse_json_data('[' + data + ']', trained)
 
     dicts = []
     for d in data:
